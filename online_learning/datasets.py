@@ -1,5 +1,6 @@
 from sklearn.datasets import make_sparse_coded_signal
-import arff
+from scipy.io.arff import loadarff
+from numpy.lib import recfunctions as rfn
 import numpy as np
 import os
 
@@ -22,11 +23,9 @@ def make_mnist():
 
 
 def load_arff_data(file_path):
-    dataset = arff.load(open(file_path, 'r'))
-    np_array = np.array(dataset['data'])
-    data = np_array[:, :-1]
-    label = np_array[:, -1]
-    return data.astype(float), label.astype(int)
+    data, __ = loadarff(file_path)
+    data = rfn.structured_to_unstructured(data)
+    return data[:,:-1].astype(float), data[:,-1].astype(int)
 
 
 def make_faces():
