@@ -52,6 +52,34 @@ plt.ylabel("Nb of samples until stable")
 plt.show()
 
 
+## atoms stabilisation
+
+n_components = 10
+batch_size = 10
+verbose = 0
+d = np.random.randn(n_components, X.shape[1])
+clf = MiniBatchDictionaryLearning(n_components=n_components,
+                                  batch_size=batch_size,
+                                  # dict_init=d,
+                                  verbose=verbose)
+
+out = []
+tolerance = 1e-2
+
+for i, sample in loader(X, batch_size):
+    clf.partial_fit(sample)
+    if verbose:
+        print()
+    out.append(np.sum([np.allclose(d[j], clf.components_[j], atol=tolerance) for j in range(n_components)]))
+    d = clf.components_.copy()
+
+plt.plot(out, 'o')
+plt.xlabel("Iteration")
+plt.ylabel("Number of stable atoms")
+plt.title(f"Tolerance {tolerance}")
+plt.show()
+
+
 ## convergence of reconstruction
 
 out = []
@@ -85,7 +113,7 @@ plt.show()
 ## display dictionary
 
 n_components = 10
-batch_size = 100
+batch_size = 10
 verbose = 0
 clf = MiniBatchDictionaryLearning(n_components=n_components,
                                   batch_size=batch_size,
