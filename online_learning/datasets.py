@@ -3,7 +3,10 @@ import numpy as np
 from numpy.lib import recfunctions as rfn
 from scipy.io.arff import loadarff
 from sklearn.datasets import make_sparse_coded_signal
-from torchvision.datasets import FashionMNIST
+try:
+    from torchvision.datasets import FashionMNIST
+except ModuleNotFoundError:
+    print("Cannot import FashionMNIST, install torchvision module.")
 
 
 git_dir_name = 'OnlineDictionaryLearningForSparseCoding'
@@ -28,6 +31,13 @@ def make_sparse_data(n_samples, n_features, n_components=15, random_state=None):
         n_nonzero_coefs=10, random_state=random_state,
     )
 
+    return X
+
+
+def make_trendy_sparse(n_samples, n_features, a_coeff, n_components=15, random_state=None):
+    X = make_sparse_data(n_samples, n_features, n_components, random_state)
+    X += np.linspace(0, a_coeff, n_features)[:, None]
+    X *= a_coeff * np.arange(len(X))[:, None]
     return X
 
 
