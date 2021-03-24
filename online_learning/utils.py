@@ -21,8 +21,8 @@ def add_text_on_image(img, texts=[], scale=1, bottom_left=(10, 200), color=(255,
     return img
 
 
-def show_imgs(imgs, titles):
-    _, axes = plt.subplots(ncols=len(imgs), figsize=(15, 15))
+def show_imgs(imgs, titles, figsize=(15, 15)):
+    _, axes = plt.subplots(ncols=len(imgs), figsize=figsize)
     for idx, img in enumerate(imgs):
         axes[idx].imshow(img)
         axes[idx].set_title(titles[idx])
