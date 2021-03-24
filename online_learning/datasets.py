@@ -30,14 +30,13 @@ def make_sparse_data(n_samples, n_features, n_components=15, random_state=None):
         n_samples=n_samples, n_components=n_components, n_features=n_features,
         n_nonzero_coefs=10, random_state=random_state,
     )
-
     return X
 
 
 def make_trendy_sparse(n_samples, n_features, a_coeff, n_components=15, random_state=None):
-    X = make_sparse_data(n_samples, n_features, n_components, random_state)
-    X += np.linspace(0, a_coeff, n_features)[:, None]
-    X *= a_coeff * np.arange(len(X))[:, None]
+    X = make_sparse_data(n_samples, n_features, n_components, random_state).T
+    X += np.linspace(0, a_coeff, n_features)[None, :]
+    X *= a_coeff * np.arange(n_samples)[:, None]
     return X
 
 
