@@ -31,12 +31,15 @@ def make_sparse_data(n_samples, n_features, n_components=15, random_state=None):
     return X
 
 
-def make_fashion_mnist(n_samples):
+def make_fashion_mnist(n_samples_train, n_samples_test=0):
     dataset = FashionMNIST(FASHION_MNIST_DIR, download=True)
-    n_samples = min(len(dataset), n_samples)
+    n_samples = min(len(dataset), n_samples_train + n_samples_test)
     X = np.array([np.array(dataset[idx][0]).flatten()
                   for idx in range(n_samples)])
-    return X
+
+    X_train = X[:n_samples_train]
+    X_test = X[n_samples_train:]
+    return X_train, X_test
 
 
 def load_arff_data(file_path):
