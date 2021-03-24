@@ -1,7 +1,8 @@
 import numpy as np
-from online_learning.datasets import make_faces, make_sparse_data
+from online_learning.datasets import make_faces, make_sparse_data, make_trendy_sparse
 from sklearn.decomposition import MiniBatchDictionaryLearning, DictionaryLearning
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 
 def loader(X, batch_size):
@@ -12,8 +13,9 @@ def loader(X, batch_size):
             yield j, X[i:]
 
 
-X = make_sparse_data(n_samples=50000,
-                     n_features=1000,  # length of the signal
+# X = make_trendy_sparse(5000, 100, 2.0, 10, None)
+X = make_sparse_data(n_samples=5000,
+                     n_features=100,  # length of the signal
                      n_components=10,
                      random_state=None).T
 # X, __ = make_faces()
@@ -57,7 +59,7 @@ test_x = X[0].reshape(1, -1)
 X = X[1:]
 
 n_components = 15
-batch_size = 100
+batch_size = 1
 verbose = 0
 clf = MiniBatchDictionaryLearning(n_components=n_components,
                                   batch_size=batch_size,
@@ -77,4 +79,42 @@ for i, sample in loader(X, batch_size):
 plt.plot(out)
 plt.xlabel("Iteration")
 plt.ylabel("Reconstruction error")
+plt.show()
+
+
+## display dictionary
+
+n_components = 10
+batch_size = 100
+verbose = 0
+clf = MiniBatchDictionaryLearning(n_components=n_components,
+                                  batch_size=batch_size,
+                                  transform_algorithm='lasso_lars',
+                                  # dict_init=d,
+                                  verbose=verbose)
+
+out = []
+sample_every = 3
+if n_components%2 == 0:
+    fig, axs = plt.subplots(n_components//2, 2)
+else:
+    fig, axs = plt.subplots(n_components//2+1, 2)
+lines = [ax.plot(X[1])[0] for ax in axs.flatten()]
+
+for i, sample in loader(X, batch_size):
+    clf.partial_fit(sample)
+    if verbose:
+        print()
+    if i%sample_every == 0:
+        out.append(clf.components_.copy())
+
+
+def animate(i):
+    fig.suptitle(f"Iteration {i*sample_every}")
+    for line, component in zip(lines, out[i]):
+        line.set_ydata(component)
+    return lines,
+
+
+ani = animation.FuncAnimation(fig, animate, frames=len(out), repeat=True)
 plt.show()
