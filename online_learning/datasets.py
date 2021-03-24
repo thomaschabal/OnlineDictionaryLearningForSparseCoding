@@ -22,10 +22,10 @@ FASHION_MNIST_DIR = DATASETS_DIR + 'FashionMNIST/'
 #####################################################
 
 
-def make_sparse_data(n_samples, n_features, n_components=15):
+def make_sparse_data(n_samples, n_features, n_components=15, random_state=None):
     X, _, _ = make_sparse_coded_signal(
-        n_samples=n_samples, n_components=15, n_features=n_features,
-        n_nonzero_coefs=10, random_state=42,
+        n_samples=n_samples, n_components=n_components, n_features=n_features,
+        n_nonzero_coefs=10, random_state=random_state,
     )
 
     return X
