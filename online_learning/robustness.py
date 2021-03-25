@@ -26,9 +26,13 @@ def plot_reconstruction_error_and_dictionary_distances(
     ax0.set_title("Reconstruction error through time")
     if len(data_nature_changes_time) > 0:
         ymax = 1.015 * np.max(reconstruction_errors)
-        for change_x in data_nature_changes_time:
-            ax0.vlines(change_x, 0, ymax, colors="red",
-                       linestyles="dashed", label="Data nature change")
+        for idx, change_x in enumerate(data_nature_changes_time):
+            if idx == 0:
+                ax0.vlines(change_x, 0, ymax, colors="red",
+                           linestyles="dashed", label="Data nature change")
+            else:
+                ax0.vlines(change_x, 0, ymax, colors="red",
+                           linestyles="dashed")
     ax0.legend()
 
     ax1.loglog(batches_seen, dictionary_atoms_distances)
@@ -38,9 +42,13 @@ def plot_reconstruction_error_and_dictionary_distances(
         f"Evolution of the distance between dictionary atoms every {compute_atoms_distance_every} batches")
     if len(data_nature_changes_batches) > 0:
         ymax = 1.015 * np.max(dictionary_atoms_distances)
-        for change_x in data_nature_changes_batches:
-            ax1.vlines(change_x, 0, ymax, colors="red",
-                       linestyles="dashed", label="Data nature change")
+        for idx, change_x in enumerate(data_nature_changes_batches):
+            if idx == 0:
+                ax1.vlines(change_x, 0, ymax, colors="red",
+                           linestyles="dashed", label="Data nature change")
+            else:
+                ax1.vlines(change_x, 0, ymax, colors="red",
+                           linestyles="dashed")
     ax1.legend()
     plt.show()
 
