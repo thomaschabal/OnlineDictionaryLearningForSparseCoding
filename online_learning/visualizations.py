@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def show_atoms_img(atoms, figsize=(15, 8)):
+def show_atoms_img(atoms: np.ndarray, figsize=(15, 8)):
     n_atoms = atoms.shape[0]
     n_imgs_per_row = 4
     nrows, ncols = int(np.ceil(n_atoms / n_imgs_per_row)
@@ -20,8 +20,12 @@ def show_atoms_img(atoms, figsize=(15, 8)):
     plt.show()
 
 
-def show_dictionary_atoms_img(dict_learner, atom_h=28, atom_w=28, figsize=(15, 8)):
-    atoms = np.reshape(dict_learner.components_,
-                       (dict_learner.n_components, atom_h, atom_w))
+def show_dictionary_atoms_img(dict_learner, color=False, atom_h=28, atom_w=28, figsize=(15, 8)):
+    if color:
+        new_shape = (dict_learner.n_components, atom_h, atom_w, 3)
+    else:
+        new_shape = (dict_learner.n_components, atom_h, atom_w)
+    atoms = np.reshape(dict_learner.components_, new_shape)
 
+    atoms = (atoms - np.min(atoms)) / (np.max(atoms) - np.min(atoms))
     show_atoms_img(atoms, figsize=figsize)
