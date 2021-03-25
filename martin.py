@@ -80,6 +80,46 @@ plt.title(f"Tolerance {tolerance}")
 plt.show()
 
 
+## atoms evolution
+
+n_components = 10
+batch_size = 10
+verbose = 0
+d = np.random.randn(n_components, X.shape[1])
+clf = MiniBatchDictionaryLearning(n_components=n_components,
+                                  batch_size=batch_size,
+                                  # dict_init=d,
+                                  verbose=verbose)
+
+out = [[] for j in range(n_components)]
+
+for i, sample in loader(X, batch_size):
+    clf.partial_fit(sample)
+    if verbose:
+        print()
+    for j in range(n_components):
+        out[j].append(np.linalg.norm(d[j] - clf.components_[j]))
+    d = clf.components_.copy()
+
+out = [l[1:] for l in out]
+
+percentile = 90
+
+if n_components%2 == 0:
+    fig, axs = plt.subplots(n_components//2, 2, sharex=True)
+else:
+    fig, axs = plt.subplots(n_components//2+1, 2, sharex=True)
+axs = axs.flatten()
+fig.suptitle(f"Evolution of atoms and stabilization below {percentile}th centile")
+for j in range(n_components):
+    axs[j].set_title(f"Atom {j+1}", fontdict={'fontsize': 'medium'})
+    axs[j].plot(out[j])
+    threshold = np.percentile(out[j], percentile)
+    axs[j].axvline(np.argmax([(out[j][k:] < threshold).all() for k in range(len(out[j]))]), ls='--', c='r')
+# plt.tight_layout()
+plt.show()
+
+
 ## convergence of reconstruction
 
 out = []
