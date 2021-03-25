@@ -5,6 +5,10 @@ def l2_normalized_error(X, X_hat):
     return np.mean(np.sum((X_hat - X) ** 2, axis=1) / np.sum(X ** 2, axis=1))
 
 
+def l2_images_error(img, img_hat):
+    return np.linalg.norm(img - img_hat)
+
+
 def sparsity_ratio(X):
     return np.mean(X == 0)
 

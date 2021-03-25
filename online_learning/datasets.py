@@ -40,14 +40,15 @@ def make_trendy_sparse(n_samples, n_features, a_coeff, n_components=15, random_s
     return X
 
 
+# We return normalized images, which range in [0, 1]
 def make_fashion_mnist(n_samples_train, n_samples_test=0):
     dataset = FashionMNIST(FASHION_MNIST_DIR, download=True)
     n_samples = min(len(dataset), n_samples_train + n_samples_test)
     X = np.array([np.array(dataset[idx][0]).flatten()
                   for idx in range(n_samples)])
 
-    X_train = X[:n_samples_train]
-    X_test = X[n_samples_train:]
+    X_train = X[:n_samples_train] / 255
+    X_test = X[n_samples_train:] / 255
     return X_train, X_test
 
 
