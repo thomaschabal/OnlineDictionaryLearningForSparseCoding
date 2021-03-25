@@ -5,6 +5,7 @@ from tqdm import tqdm
 from sklearn.decomposition import MiniBatchDictionaryLearning
 from .metrics import distance_between_atoms
 from .visualizations import show_dictionary_atoms_img
+from .plots import plot_reconstruction_error_and_dictionary_distances
 
 
 def loader(X, batch_size):
@@ -13,44 +14,6 @@ def loader(X, batch_size):
             yield j, X[i: i + batch_size]
         except IndexError:
             yield j, X[i:]
-
-
-def plot_reconstruction_error_and_dictionary_distances(
-        times, reconstruction_errors, batches_seen, dictionary_atoms_distances, compute_atoms_distance_every, data_nature_changes_time=[], data_nature_changes_batches=[]):
-    _, (ax0, ax1) = plt.subplots(ncols=2, figsize=(15, 5))
-
-    for idx, single_error_curve in enumerate(reconstruction_errors):
-        ax0.loglog(times, single_error_curve, label=f"Test image {idx}")
-    ax0.set_xlabel("Time (s)")
-    ax0.set_ylabel("Reconstruction error")
-    ax0.set_title("Reconstruction error through time")
-    if len(data_nature_changes_time) > 0:
-        ymax = 1.015 * np.max(reconstruction_errors)
-        for idx, change_x in enumerate(data_nature_changes_time):
-            if idx == 0:
-                ax0.vlines(change_x, 0, ymax, colors="red",
-                           linestyles="dashed", label="Data nature change")
-            else:
-                ax0.vlines(change_x, 0, ymax, colors="red",
-                           linestyles="dashed")
-    ax0.legend()
-
-    ax1.loglog(batches_seen, dictionary_atoms_distances)
-    ax1.set_xlabel("Batches seen")
-    ax1.set_ylabel("Distance from the previous dictionary")
-    ax1.set_title(
-        f"Evolution of the distance between dictionary atoms every {compute_atoms_distance_every} batches")
-    if len(data_nature_changes_batches) > 0:
-        ymax = 1.015 * np.max(dictionary_atoms_distances)
-        for idx, change_x in enumerate(data_nature_changes_batches):
-            if idx == 0:
-                ax1.vlines(change_x, 0, ymax, colors="red",
-                           linestyles="dashed", label="Data nature change")
-            else:
-                ax1.vlines(change_x, 0, ymax, colors="red",
-                           linestyles="dashed")
-    ax1.legend()
-    plt.show()
 
 
 def study_dictionary_convergence_and_reconstruction_for_images(
