@@ -71,5 +71,6 @@ def study_dictionary_convergence_and_reconstruction_for_images(
 
     # We eventually plot the reconstruction error and the evolution of atoms distances
     reconstruction_errors = np.array(reconstruction_errors).T
+    dictionary_atoms_distances = np.array(dictionary_atoms_distances)
     plot_reconstruction_error_and_dictionary_distances(
         times, reconstruction_errors, batches_seen, dictionary_atoms_distances, compute_atoms_distance_every, data_nature_changes_time, data_nature_changes_batches)
