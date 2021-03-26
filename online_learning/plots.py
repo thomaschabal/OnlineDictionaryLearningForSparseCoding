@@ -2,32 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_losses_sparsities(xs, losses, sparsities, x_label):
-    _, (ax0, ax1) = plt.subplots(ncols=2, figsize=(15, 5))
-    ax0.loglog(xs, losses)
-    ax0.set_xlabel(x_label)
-    ax0.set_ylabel("L2 loss normalized")
-    ax0.set_title(f"Impact of {x_label} on the L2 loss")
-
-    ax1.loglog(xs, sparsities)
-    ax1.set_xlabel(x_label)
-    ax1.set_ylabel("Sparsity ratio")
-    ax1.set_title(f"Impact of {x_label} on the sparsity ratio")
-
-    plt.show()
-
-
-def plot_alphas_losses_sparsities(alphas, losses, sparsities):
-    plot_losses_sparsities(alphas, losses, sparsities, "alpha")
-
-
-def plot_n_components_losses_sparsities(n_components, losses, sparsities):
-    plot_losses_sparsities(n_components, losses, sparsities, "n_components")
-
-
 # ===== Evaluate reconstruction error and dictionary stability =====
 
 
+# Plot a line at the times corresponding to changes in the nature of the data
 def plot_data_nature_changes(ax, data_nature_changes, ymax):
     for idx, change_x in enumerate(data_nature_changes):
         label = "Data nature change" if idx == 0 else None

@@ -1,6 +1,5 @@
 import time
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from sklearn.decomposition import MiniBatchDictionaryLearning
 from .metrics import distance_between_atoms
@@ -22,12 +21,15 @@ def study_dictionary_convergence_and_reconstruction_for_images(
         X: array of shape (num_samples, feature_size)
         X_test: array of shape (num_samples, feature_size)
     """
+
+    # Initializations
     times, reconstruction_errors = [], []
     dictionary_atoms_distances, batches_seen = [], []
     data_nature_changes_batches = [
         size // batch_size for size in data_nature_changes]
     data_nature_changes_time = []
 
+    # Define an online dictionary learning
     clf = MiniBatchDictionaryLearning(n_components=n_atoms,
                                       batch_size=batch_size,
                                       transform_algorithm='lasso_lars',
@@ -40,7 +42,7 @@ def study_dictionary_convergence_and_reconstruction_for_images(
     for i, sample in tqdm(loader(X, batch_size), total=X.shape[0] // batch_size):
         clf.partial_fit(sample)
 
-        # We then measure reconstruction error and the atoms distances between each iteration
+        # We then measure the reconstruction error
         reconstruction_error = np.array([np.linalg.norm(
             test_x - clf.transform(test_x).dot(clf.components_)) for test_x in X_test])
         reconstruction_errors.append(reconstruction_error)
@@ -55,6 +57,7 @@ def study_dictionary_convergence_and_reconstruction_for_images(
 
         atoms_distance_computation_cond = i % compute_atoms_distance_every == compute_atoms_distance_every - 1
         if atoms_distance_computation_cond:
+            # We occasionally compute the atoms distances between iterations
             distance_from_prev_dict = distance_between_atoms(
                 former_atoms, clf.components_)
             former_atoms = np.copy(clf.components_)
@@ -62,6 +65,7 @@ def study_dictionary_convergence_and_reconstruction_for_images(
 
             batches_seen.append(i)
 
+            # We optionally display the learnt atoms
             if display_intermediate:
                 print("=" * 20, "\n", "Batch", i)
                 print("Distance between current and previous atoms:",

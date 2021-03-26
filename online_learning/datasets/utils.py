@@ -27,11 +27,3 @@ def resize_fashion_mnist_feat(feat, dest_size=(32, 32)):
 
 def resize_fashion_mnist_dataset(X, dest_size=(32, 32)):
     return np.array([resize_fashion_mnist_feat(feat, dest_size) for feat in X])
-
-
-# ===== FaceAll dataset =====
-
-def load_arff_data(file_path):
-    data, __ = loadarff(file_path)
-    data = rfn.structured_to_unstructured(data)
-    return data[:, :-1].astype(float), data[:, -1].astype(int)
