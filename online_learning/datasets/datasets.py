@@ -30,16 +30,18 @@ CIFAR_CLASSES = ["airplane", "automobile", "bird", "cat",
 
 # ===== Sparse datasets =====
 
-def make_sparse_data(n_samples: int, n_features: int, n_components=15, random_state=None):
+def make_sparse_data(n_samples: int, n_features: int, n_components=15, random_state=None, n_nonzero_coefs=None):
+    if n_nonzero_coefs is None:
+        n_nonzero_coefs = n_components
     X, _, _ = make_sparse_coded_signal(
         n_samples=n_samples, n_components=n_components, n_features=n_features,
-        n_nonzero_coefs=10, random_state=random_state,
+        n_nonzero_coefs=n_nonzero_coefs, random_state=random_state,
     )
     return X
 
 
-def make_trendy_sparse(n_samples: int, n_features: int, a_coeff: float, n_components=15, random_state=None):
-    X = make_sparse_data(n_samples, n_features, n_components, random_state).T
+def make_trendy_sparse(n_samples: int, n_features: int, a_coeff: float, n_components=15, random_state=None, n_nonzero_coefs=None):
+    X = make_sparse_data(n_samples, n_features, n_components, random_state, n_nonzero_coefs).T
     X += np.linspace(0, a_coeff, n_features)[None, :]
     X *= a_coeff * np.arange(n_samples)[:, None]
     return X
